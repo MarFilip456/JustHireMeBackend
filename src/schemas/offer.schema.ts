@@ -38,7 +38,7 @@ export class Offer {
   @Prop()
   logo: string;
   @Prop()
-  mainLang: string;
+  mainField: string;
   @Prop()
   techStack: [TechStack];
 }

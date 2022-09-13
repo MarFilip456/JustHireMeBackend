@@ -5,6 +5,7 @@ import { Offer, OfferDocument } from '../schemas/offer.schema';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { v4 as uuid } from 'uuid';
 import { User } from 'src/schemas/user.schema';
+import { FilterOfferDto } from './dto/filter-offer.dto';
 
 @Injectable()
 export class OfferService {
@@ -14,7 +15,69 @@ export class OfferService {
   ) {}
 
   async getOffers(): Promise<Offer[]> {
-    return this.offerModel.find();
+    return (await this.offerModel.find()).reverse();
+  }
+  async getOffersWithFilters(filterOfferDto: FilterOfferDto): Promise<Offer[]> {
+    const {
+      search,
+      location,
+      mainField,
+      minSalary,
+      maxSalary,
+      employment,
+      experience,
+    } = filterOfferDto;
+    let offers = this.offerModel.find();
+    if (search) {
+      offers = offers.find({
+        jobPosition: new RegExp(search, 'i'),
+      });
+    }
+    if (location) {
+      offers = offers.find({
+        location: new RegExp(location, 'i'),
+      });
+    }
+    if (mainField) {
+      offers = offers.find({ mainField: mainField });
+    }
+    if (minSalary) {
+      offers = offers.find({
+        $or: [
+          { 'employment.b2b.minSalary': { $gt: Number(minSalary) } },
+          { 'employment.uop.minSalary': { $gt: Number(minSalary) } },
+        ],
+      });
+    }
+    if (maxSalary) {
+      offers = offers.find({
+        $or: [
+          {
+            $and: [
+              { 'employment.b2b.maxSalary': { $lt: Number(maxSalary) } },
+              { 'employment.b2b.maxSalary': { $gt: 0 } },
+            ],
+          },
+          {
+            $and: [
+              { 'employment.uop.maxSalary': { $lt: Number(maxSalary) } },
+              { 'employment.uop.maxSalary': { $gt: 0 } },
+            ],
+          },
+        ],
+      });
+    }
+    if (employment) {
+      if (employment === 'b2b') {
+        offers = offers.find({ 'employment.b2b.allowB2b': true });
+      } else if (employment === 'uop') {
+        offers = offers.find({ 'employment.uop.allowUop': true });
+      }
+    }
+    if (experience) {
+      offers = offers.find({ expLevel: experience });
+    }
+    return offers;
   }
   async getOfferById(id: string): Promise<Offer> {
     const found = await this.offerModel.findOne({ id });

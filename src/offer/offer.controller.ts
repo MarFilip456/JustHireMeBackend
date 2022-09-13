@@ -9,18 +9,24 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Query } from '@nestjs/common';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/schemas/user.schema';
 import { Offer } from '../schemas/offer.schema';
 import { CreateOfferDto } from './dto/create-offer.dto';
+import { FilterOfferDto } from './dto/filter-offer.dto';
 import { OfferService } from './offer.service';
 
 @Controller('offer')
 export class OfferController {
   constructor(private offerService: OfferService) {}
   @Get()
-  getOffers(): Promise<Offer[]> {
-    return this.offerService.getOffers();
+  getOffers(@Query() filterOfferDto: FilterOfferDto): Promise<Offer[]> {
+    if (Object.keys(filterOfferDto).length > 0) {
+      return this.offerService.getOffersWithFilters(filterOfferDto);
+    } else {
+      return this.offerService.getOffers();
+    }
   }
 
   @Get('/:id')
