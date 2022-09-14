@@ -26,6 +26,8 @@ export class OfferService {
       maxSalary,
       employment,
       experience,
+      undisclosed,
+      remote,
     } = filterOfferDto;
     let offers = this.offerModel.find();
     if (search) {
@@ -44,8 +46,8 @@ export class OfferService {
     if (minSalary) {
       offers = offers.find({
         $or: [
-          { 'employment.b2b.minSalary': { $gt: Number(minSalary) } },
-          { 'employment.uop.minSalary': { $gt: Number(minSalary) } },
+          { 'employment.b2b.minSalary': { $gt: minSalary } },
+          { 'employment.uop.minSalary': { $gt: minSalary } },
         ],
       });
     }
@@ -54,13 +56,13 @@ export class OfferService {
         $or: [
           {
             $and: [
-              { 'employment.b2b.maxSalary': { $lt: Number(maxSalary) } },
+              { 'employment.b2b.maxSalary': { $lt: maxSalary } },
               { 'employment.b2b.maxSalary': { $gt: 0 } },
             ],
           },
           {
             $and: [
-              { 'employment.uop.maxSalary': { $lt: Number(maxSalary) } },
+              { 'employment.uop.maxSalary': { $lt: maxSalary } },
               { 'employment.uop.maxSalary': { $gt: 0 } },
             ],
           },
@@ -76,6 +78,14 @@ export class OfferService {
     }
     if (experience) {
       offers = offers.find({ expLevel: experience });
+    }
+    if (undisclosed) {
+      offers = offers.find({ 'employment.undisclosed': false });
+    }
+    if (remote) {
+      offers = offers.find({
+        $or: [{ fullyRemote: true }, { fullyRemote: false }],
+      });
     }
     return offers;
   }
