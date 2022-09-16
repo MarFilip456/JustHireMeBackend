@@ -24,6 +24,8 @@ export class Offer {
   @Prop()
   employment: Employment;
   @Prop()
+  description: string;
+  @Prop()
   expLevel: string;
   @Prop()
   fullyRemote: boolean;

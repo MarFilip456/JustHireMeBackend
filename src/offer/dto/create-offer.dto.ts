@@ -11,6 +11,7 @@ export class CreateOfferDto {
   fullyRemote: boolean;
   jobPosition: string;
   location: string;
+  description: string;
   lat: number;
   lng: number;
   logo: string;

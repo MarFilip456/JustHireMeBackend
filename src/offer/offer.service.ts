@@ -80,7 +80,7 @@ export class OfferService {
       offers = offers.find({ expLevel: experience });
     }
     if (undisclosed) {
-      offers = offers.find({ 'employment.undisclosed': false });
+      offers = offers.find({ 'employment.undisclosed': true });
     }
     if (remote) {
       offers = offers.find({

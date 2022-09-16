@@ -6,6 +6,6 @@ export class FilterOfferDto {
   maxSalary?: number;
   employment?: string;
   experience?: string;
-  undisclosed?: boolean;
-  remote?: boolean;
+  undisclosed?: string;
+  remote?: string;
 }
