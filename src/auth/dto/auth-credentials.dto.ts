@@ -14,6 +14,8 @@ export class AuthCredentialsDto {
   emailInput: string;
   @IsNotEmpty()
   @MinLength(8)
-  @Matches(/((?=.*\d)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/)
+  @Matches(/[A-Z]/)
+  @Matches(/[a-z]/)
+  @Matches(/[0-9]/)
   passwordInput: string;
 }
