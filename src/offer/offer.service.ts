@@ -43,7 +43,7 @@ export class OfferService {
     if (mainField) {
       offers = offers.find({ mainField: mainField });
     }
-    if (minSalary) {
+    if (minSalary && maxSalary === undefined) {
       offers = offers.find({
         $or: [
           { 'employment.b2b.minSalary': { $gt: minSalary } },
@@ -51,19 +51,37 @@ export class OfferService {
         ],
       });
     }
-    if (maxSalary) {
+    if (maxSalary && minSalary === undefined) {
       offers = offers.find({
         $or: [
           {
             $and: [
               { 'employment.b2b.maxSalary': { $lt: maxSalary } },
-              { 'employment.b2b.maxSalary': { $gt: 0 } },
+              { 'employment.b2b.allowB2b': true },
             ],
           },
           {
             $and: [
               { 'employment.uop.maxSalary': { $lt: maxSalary } },
-              { 'employment.uop.maxSalary': { $gt: 0 } },
+              { 'employment.uop.allowUop': true },
+            ],
+          },
+        ],
+      });
+    }
+    if (minSalary && maxSalary) {
+      offers = offers.find({
+        $or: [
+          {
+            $and: [
+              { 'employment.b2b.minSalary': { $gt: minSalary } },
+              { 'employment.b2b.maxSalary': { $lt: maxSalary } },
+            ],
+          },
+          {
+            $and: [
+              { 'employment.uop.minSalary': { $gt: minSalary } },
+              { 'employment.uop.maxSalary': { $lt: maxSalary } },
             ],
           },
         ],
@@ -80,7 +98,7 @@ export class OfferService {
       offers = offers.find({ expLevel: experience });
     }
     if (undisclosed) {
-      offers = offers.find({ 'employment.undisclosed': true });
+      offers = offers.find({ 'employment.undisclosed': false });
     }
     if (remote) {
       offers = offers.find({

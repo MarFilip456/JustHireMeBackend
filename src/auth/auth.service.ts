@@ -79,12 +79,12 @@ export class AuthService {
       throw new UnauthorizedException('Please check your login credentials.');
     }
   }
-  async getUserById(id: string): Promise<User> {
-    const user = await this.authModel.findOne({ id });
-    if (!user) {
-      throw new NotFoundException(`Developer with ID "${id}" not found`);
+  async getUserById(user: User): Promise<User> {
+    const found = await this.authModel.findOne({ id: user.id });
+    if (!found) {
+      throw new NotFoundException(`Developer with ID "${user.id}" not found`);
     }
-    return user;
+    return found;
   }
   async updateUserInfo(
     userId: string,
