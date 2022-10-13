@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OfferModule } from './offer/offer.module';
 import { AuthModule } from './auth/auth.module';
-
+/* 'mongodb://localhost/nest' */
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/nest'),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     OfferModule,
     AuthModule,
   ],
