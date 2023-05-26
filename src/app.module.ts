@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module';
 /* process.env.MONGODB_URI */
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb+srv://cluster0.qg4jq.mongodb.net'),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     OfferModule,
     AuthModule,
   ],
